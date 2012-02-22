@@ -2,4 +2,4 @@ target/
 .scala_dependencies
 .cache
 .DS_Store
-.settings
+.settings/
