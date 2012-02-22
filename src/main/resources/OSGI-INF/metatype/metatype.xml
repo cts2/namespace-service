@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.0.0">
+	<OCD description="Namespace Manager" name="Namespace Manager" id="edu.mayo.cts2.framework.namespace.internal.DefaultNamespaceManager">
+		<AD name="Properties File Path" id="propertiesFilePath" required="true" type="String" default="${context}/namespaces.properties" />
+	</OCD>
+	<Designate pid="edu.mayo.cts2.framework.namespace.internal.DefaultNamespaceManager">
+        <Object ocdref="edu.mayo.cts2.framework.namespace.internal.DefaultNamespaceManager"/>
+    </Designate>
+	
+</metatype:MetaData>
