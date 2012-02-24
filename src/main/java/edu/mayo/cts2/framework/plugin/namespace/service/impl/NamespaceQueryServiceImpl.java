@@ -12,7 +12,7 @@ import edu.mayo.cts2.framework.model.service.core.DocumentedNamespaceReference;
 import edu.mayo.cts2.framework.model.service.namespace.MultiNameNamespaceReference;
 import edu.mayo.cts2.framework.plugin.namespace.dao.NamespaceRepository;
 import edu.mayo.cts2.framework.plugin.namespace.model.Namespace;
-import edu.mayo.cts2.framework.plugin.namespace.service.NamespaceQueryService;
+import edu.mayo.cts2.framework.service.namespace.NamespaceQueryService;
 
 @Component
 public class NamespaceQueryServiceImpl implements NamespaceQueryService {

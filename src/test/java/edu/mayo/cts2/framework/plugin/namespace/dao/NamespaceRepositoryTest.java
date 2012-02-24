@@ -3,20 +3,14 @@ package edu.mayo.cts2.framework.plugin.namespace.dao;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 import edu.mayo.cts2.framework.plugin.namespace.model.Namespace;
 
-
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(value="classpath:/META-INF/spring/namespace-manager-context.xml")
-public class NamespaceRepositoryTest {
+public class NamespaceRepositoryTest extends DBClearingTestBase {
 	
 	@Autowired
 	NamespaceRepository namespaceRepository;
@@ -32,16 +26,15 @@ public class NamespaceRepositoryTest {
 	}
 	
 	@Test
-	@Transactional
-	public void testOrder(){
+	public void testContains(){
 		Namespace ns1 = new Namespace("http://my/uri");
 		ns1.getAlternateNames().add("one");
 		ns1.getAlternateNames().add("two");
 		this.namespaceRepository.save(ns1);
 		
 		Namespace ns2 = this.namespaceRepository.findOne("http://my/uri");
-		assertEquals(ns2.getAlternateNames().get(0), "one");
-		assertEquals(ns2.getAlternateNames().get(1), "two");
+		assertTrue(ns2.getAlternateNames().contains("one"));
+		assertTrue(ns2.getAlternateNames().contains("two"));
 		
 		ns2.getAlternateNames().clear();
 		ns2.getAlternateNames().add("two");
@@ -49,8 +42,8 @@ public class NamespaceRepositoryTest {
 		this.namespaceRepository.save(ns2);
 		
 		Namespace ns3 = this.namespaceRepository.findOne("http://my/uri");
-		assertEquals(ns3.getAlternateNames().get(0), "two");
-		assertEquals(ns3.getAlternateNames().get(1), "one");
+		assertTrue(ns3.getAlternateNames().contains("two"));
+		assertTrue(ns3.getAlternateNames().contains("one"));
 	}
 	
 	@Test

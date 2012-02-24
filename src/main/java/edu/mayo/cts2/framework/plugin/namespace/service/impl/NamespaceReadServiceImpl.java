@@ -8,7 +8,7 @@ import edu.mayo.cts2.framework.model.service.core.DocumentedNamespaceReference;
 import edu.mayo.cts2.framework.model.service.namespace.MultiNameNamespaceReference;
 import edu.mayo.cts2.framework.plugin.namespace.dao.NamespaceRepository;
 import edu.mayo.cts2.framework.plugin.namespace.model.Namespace;
-import edu.mayo.cts2.framework.plugin.namespace.service.NamespaceReadService;
+import edu.mayo.cts2.framework.service.namespace.NamespaceReadService;
 
 @Component
 public class NamespaceReadServiceImpl implements NamespaceReadService {

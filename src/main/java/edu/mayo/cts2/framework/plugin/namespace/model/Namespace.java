@@ -1,9 +1,10 @@
 package edu.mayo.cts2.framework.plugin.namespace.model;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -18,10 +19,11 @@ public class Namespace {
 	@Id
 	private String uri;
 	
+	@Column(unique=true)
 	private String preferredName;
 	
 	@ElementCollection(fetch = FetchType.EAGER)
-	private List<String> alternateNames = new ArrayList<String>();
+	private Set<String> alternateNames = new HashSet<String>();
 	
 	public Namespace(){
 		super();
@@ -55,11 +57,11 @@ public class Namespace {
 		this.preferredName = preferredName;
 	}
 
-	public List<String> getAlternateNames() {
+	public Set<String> getAlternateNames() {
 		return alternateNames;
 	}
 
-	public void setAlternateNames(List<String> alternateNames) {
+	public void setAlternateNames(Set<String> alternateNames) {
 		this.alternateNames = alternateNames;
 	}
 

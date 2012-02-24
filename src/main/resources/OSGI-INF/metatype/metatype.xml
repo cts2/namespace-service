@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.0.0">
-	<OCD description="Namespace Manager" name="Namespace Manager" id="edu.mayo.cts2.framework.namespace.internal.DefaultNamespaceManager">
-		<AD name="Properties File Path" id="propertiesFilePath" required="true" type="String" default="${context}/namespaces.properties" />
+	<OCD description="Namespace Manager" name="Namespace Manager" id="edu.mayo.cts2.framework.plugin.namespace">
+		<AD name="JDBC URL" id="jdbcUrl" required="true" type="String"  />
+		<AD name="JDBC Driver Class" id="jdbcDriverClass" required="true" type="String"  />
+		<AD name="JDBC User Name" id="username" required="true" type="String"  />
+		<AD name="JDBC Password" id="password" required="true" type="Password"  />
 	</OCD>
-	<Designate pid="edu.mayo.cts2.framework.namespace.internal.DefaultNamespaceManager">
-        <Object ocdref="edu.mayo.cts2.framework.namespace.internal.DefaultNamespaceManager"/>
+	<Designate pid="edu.mayo.cts2.framework.plugin.namespace">
+        <Object ocdref="edu.mayo.cts2.framework.plugin.namespace"/>
     </Designate>
 	
 </metatype:MetaData>

@@ -5,20 +5,15 @@ import static org.junit.Assert.assertNull;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import edu.mayo.cts2.framework.plugin.namespace.dao.DBClearingTestBase;
 import edu.mayo.cts2.framework.plugin.namespace.dao.NamespaceRepository;
 import edu.mayo.cts2.framework.plugin.namespace.model.Namespace;
-import edu.mayo.cts2.framework.plugin.namespace.service.NamespaceReadService;
+import edu.mayo.cts2.framework.service.namespace.NamespaceReadService;
 
-
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(value="classpath:/META-INF/spring/namespace-manager-context.xml")
-public class NamespaceReadServiceImplTest {
+public class NamespaceReadServiceImplTest extends DBClearingTestBase {
 	
 	@Autowired
 	NamespaceReadService namespaceReadServiceImpl;

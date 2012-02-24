@@ -2,6 +2,7 @@ package edu.mayo.cts2.framework.plugin.namespace.ui;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 
 import com.vaadin.Application;
@@ -25,9 +26,9 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
 import edu.mayo.cts2.framework.model.service.namespace.MultiNameNamespaceReference;
-import edu.mayo.cts2.framework.plugin.namespace.service.NamespaceMaintenanceService;
-import edu.mayo.cts2.framework.plugin.namespace.service.NamespaceQueryService;
 import edu.mayo.cts2.framework.plugin.namespace.ui.NamespaceForm.AlternateNamesTable;
+import edu.mayo.cts2.framework.service.namespace.NamespaceMaintenanceService;
+import edu.mayo.cts2.framework.service.namespace.NamespaceQueryService;
 
 @SuppressWarnings("serial")
 @org.springframework.stereotype.Component
@@ -57,7 +58,7 @@ public class NamespaceServiceApplication extends Application implements Initiali
         initAddressList();
         initFilteringControls();
     }
-
+   
     private void initLayout() {
     	HorizontalSplitPanel splitPanel = new HorizontalSplitPanel();
         setMainWindow(new Window("CTS2 Namespace Service", splitPanel));
@@ -83,17 +84,39 @@ public class NamespaceServiceApplication extends Application implements Initiali
         bottomLeftCorner.addComponent(new Button("+",
                 new Button.ClickListener() {
                     public void buttonClick(ClickEvent event) {
-                       
-                        Object id = ((IndexedContainer) namespaceList
-                              .getContainerDataSource()).addItemAt(0);
-                        namespaceList.getItem(id).getItemProperty("URI")
-                              .setValue("http://uri");
-                        namespaceList.getItem(id).getItemProperty("Preferred Name")
-                              .setValue("aname");
+                    	
+                    	new InputDialog(getMainWindow(), "Please Input URI:",
+                                new InputDialog.Recipient() {
+                            public boolean gotInput(String uri) {
 
-                        // Select the newly added item and scroll to the item
-                        namespaceList.setValue(id);
-                        namespaceList.setCurrentPageFirstItemId(id);
+										if (!validateUri(uri)) {
+											return false;
+										} else {
+
+											Object id = ((IndexedContainer) namespaceList
+													.getContainerDataSource())
+													.addItemAt(0);
+											namespaceList.getItem(id)
+													.getItemProperty("URI")
+													.setValue(uri);
+											namespaceList.getItem(id)
+													.getItemProperty("URI")
+													.setReadOnly(true);
+											
+											// Select the newly added item and
+											// scroll to the item
+											namespaceList.setValue(id);
+											namespaceList
+													.setCurrentPageFirstItemId(id);
+											
+											MultiNameNamespaceReference ref = new MultiNameNamespaceReference();
+											ref.setUri(uri);
+											namespaceMaintenanceService.save(ref);
+											
+											return true;
+										}
+                            }
+                        });   
                     }
                 }));
 
@@ -111,6 +134,18 @@ public class NamespaceServiceApplication extends Application implements Initiali
         removalButton.setVisible(false);
         bottomLeftCorner.addComponent(removalButton);
     }
+    
+	private boolean validateUri(String uri) {
+
+		for (Object id : namespaceList.getItemIds()) {
+			if (uri.equals(((String) namespaceList.getContainerProperty(id, "URI")
+					.getValue()))) {
+				return false;
+			}
+		}
+
+		return true;
+	}
 
     private String[] initAddressList() {
         namespaceList.setContainerDataSource(namespaceData);
@@ -164,7 +199,12 @@ public class NamespaceServiceApplication extends Application implements Initiali
         	Object id = ic.addItem();
         	ic.getContainerProperty(id, "URI").setValue(namespace.getUri());
         	ic.getContainerProperty(id, "Preferred Name").setValue(namespace.getPreferredName());
+        	ic.getContainerProperty(id, "URI").setReadOnly(true);
+        	
+        	ic.getContainerProperty(id, "Alternate Names").setValue(
+        			StringUtils.join(namespace.getAlternateName(), ','));
         }
+       
      
         return ic;
     }
@@ -185,8 +225,11 @@ public class NamespaceServiceApplication extends Application implements Initiali
     }
 
 	public void afterPropertiesSet() throws Exception {
-		this.naemspaceEditor = new NamespaceForm(this.namespaceMaintenanceService);
 		this.namespaceData = this.createContainer();
+		this.naemspaceEditor = new NamespaceForm(
+				this.namespaceData,
+				this.namespaceMaintenanceService);
+		
 	}            
 
 }

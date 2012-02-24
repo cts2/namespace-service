@@ -1,8 +1,5 @@
 package edu.mayo.cts2.framework.plugin.namespace.servlet;
 
-import com.vaadin.Application;
-import com.vaadin.terminal.gwt.server.ApplicationServlet;
-
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -11,6 +8,9 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
+
+import com.vaadin.Application;
+import com.vaadin.terminal.gwt.server.ApplicationServlet;
 
 public class AutowiringApplicationServlet extends ApplicationServlet {
 

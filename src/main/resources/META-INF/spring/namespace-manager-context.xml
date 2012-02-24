@@ -34,14 +34,10 @@
 	</bean>
 
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
-<!-- 		<property name="driverClassName" value="org.hsqldb.jdbcDriver" /> -->
-		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
-<!-- 		<property name="url" value="jdbc:hsqldb:mem:test" /> -->
-
-		<property name="url" value="jdbc:mysql://localhost/namespace_manager" />
-		<property name="username" value="root" />
-<!-- 		<property name="username" value="sa" /> -->
-		<property name="password" value="" />
+		<property name="driverClassName" value="${jdbcDriverClass}" />
+		<property name="url" value="${jdbcUrl}" />
+		<property name="username" value="${username}" />
+		<property name="password" value="${password}" />
 		<property name="initialSize" value="5" />
 		<property name="maxActive" value="10" />
 		<property name="poolPreparedStatements" value="true" />

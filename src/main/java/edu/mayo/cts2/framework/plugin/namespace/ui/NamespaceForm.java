@@ -17,7 +17,7 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 
 import edu.mayo.cts2.framework.model.service.namespace.MultiNameNamespaceReference;
-import edu.mayo.cts2.framework.plugin.namespace.service.NamespaceMaintenanceService;
+import edu.mayo.cts2.framework.service.namespace.NamespaceMaintenanceService;
 
 @SuppressWarnings("serial")
 public class NamespaceForm extends Form implements ClickListener {
@@ -31,13 +31,18 @@ public class NamespaceForm extends Form implements ClickListener {
 	private Button edit = new Button("Edit", (ClickListener) this);
 	private Button addPrefix = new Button("Add Prefix", (ClickListener) this);
 
-	public NamespaceForm(NamespaceMaintenanceService namespaceMaintenanceService) {
+	public NamespaceForm(
+			IndexedContainer container,
+			NamespaceMaintenanceService namespaceMaintenanceService) {
 		this.namespaceMaintenanceService = namespaceMaintenanceService;
 
 		// Enable buffering so that commit() must be called for the form
 		// before input is written to the data. (Form input is not written
 		// immediately through to the underlying object.)
 		setWriteThrough(false);
+		
+		this.setValidationVisible(true);
+		this.setValidationVisibleOnCommit(true);
 
 		final VerticalLayout footer = new VerticalLayout();
 		footer.setSpacing(true);
@@ -56,7 +61,7 @@ public class NamespaceForm extends Form implements ClickListener {
 
 		this.setFooter(footer);	
 	}
-
+	
 	@Override
 	public void setItemDataSource(Item newDataSource) {
 		if (newDataSource != null) {
@@ -90,26 +95,42 @@ public class NamespaceForm extends Form implements ClickListener {
 			}
 		
 			Item preCommitItem = this.getItemDataSource();
-			System.out.println("Pre URI:" + preCommitItem.);
+			String preCommitUri = (String) preCommitItem.getItemProperty("URI").getValue();
 			
 			commit();
 			setReadOnly(true);
 			
-			Item item = this.getItemDataSource();
+			Item postCommitItem = this.getItemDataSource();
 			
-			this.saveItem(item);
+			String postCommitUri = (String) postCommitItem.getItemProperty("URI").getValue();
+			
+			//if the URI has been changed, we need to delete the old record.
+			//A URI change is equivalent to a DELETE of the old record and a 
+			//save of the entire new record
+			if(! preCommitUri.equals(postCommitUri)){
+				this.namespaceMaintenanceService.delete(preCommitUri);
+			}
+			
+			this.saveItem(postCommitItem);
 			
 		} else if (source == cancel) {
+			
+			
+			AlternateNamesTable table = (AlternateNamesTable) this.getField("Alternate Names");
+			table.getContainerDataSource().removeAllItems();
+			table.setPropertyDataSource(this.getItemProperty("Alternate Names"));
+		
 			discard();
 			setReadOnly(true);
+
 		} else if (source == edit) {
 			setReadOnly(false);
 		}
 		 else if (source == addPrefix) {
-			AlternateNamesTable moonTable = (AlternateNamesTable) this.getField("Alternate Names");
-			Object id = moonTable.getContainerDataSource().addItem();
-			moonTable.getItem(id).getItemProperty("remove").setValue(
-					createRemoveButton(moonTable.getContainerDataSource(), id));
+			AlternateNamesTable table = (AlternateNamesTable) this.getField("Alternate Names");
+			Object id = table.addItem();
+			table.getItem(id).getItemProperty("remove").setValue(
+					createRemoveButton(table.getContainerDataSource(), id));
 		}
 	}
 	
@@ -152,19 +173,19 @@ public class NamespaceForm extends Form implements ClickListener {
 
 		protected AlternateNamesTable(){
 			super();
+		
 			this.setContainerDataSource(alternateNamesContainer);
-			alternateNamesContainer.addContainerProperty("prefix", String.class, "..add alternate name");
+			alternateNamesContainer.addContainerProperty("prefix", String.class, "");
 			alternateNamesContainer.addContainerProperty("remove", Button.class, null);
 			
         	this.setVisibleColumns(new Object[]{"prefix", "remove"});
         	this.setCaption("Alternate Names");
         	this.setColumnWidth("prefix", 135);
-        	this.setColumnAlignments(new String[]{ Table.ALIGN_LEFT, Table.ALIGN_CENTER } );
+        	this.setColumnAlignments(new String[]{ Table.ALIGN_LEFT, Table.ALIGN_CENTER } );	
 		}
 
 	    @Override
 	    public void setPropertyDataSource(Property newDataSource) {
-	    	
 	      Object value = newDataSource.getValue();
 	        
 	      if(value != null){
@@ -174,7 +195,7 @@ public class NamespaceForm extends Form implements ClickListener {
 	          this.setPageLength(0);
 	           
 	            for(String bean : beans){
-	            	Object id = alternateNamesContainer.addItem();
+	            	Object id = this.addItem();
 	            	this.getItem(id).getItemProperty("prefix").setValue(bean.trim());
 	            	this.getItem(id).getItemProperty("remove").setValue(
 	            			createRemoveButton(alternateNamesContainer, id));
@@ -188,7 +209,10 @@ public class NamespaceForm extends Form implements ClickListener {
 	    public Object getValue() {
 	        ArrayList<String> beans = new ArrayList<String>(); 
 	        for (Object itemId: alternateNamesContainer.getItemIds()){
-	            beans.add(alternateNamesContainer.getItem(itemId).getItemProperty("prefix").toString());
+	        	String prefix = alternateNamesContainer.getItem(itemId).getItemProperty("prefix").toString();
+	        	if(StringUtils.isNotBlank(prefix)){
+	        		beans.add(prefix);
+	        	}
 	        }
 	        return StringUtils.join(beans, ',');
 	    }

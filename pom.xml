@@ -35,7 +35,7 @@
 						<Embed-Transitive>true</Embed-Transitive>
 						<Embed-Dependency>mysql-connector-java,vaadin,antlr,javassist,hsqldb,slf4j*,jboss*,commons-pool,commons-dbcp,*spring-tx*,*spring-orm*,*spring-jdbc*,*spring-data*,*hibernate*</Embed-Dependency>
 						<Spring-Context>*;timeout:=60</Spring-Context>
-						<_exportcontents>*</_exportcontents>
+<!-- 						<_exportcontents>*</_exportcontents> -->
 						<_nouses>true</_nouses>
 					</instructions>
 				</configuration>
@@ -183,7 +183,7 @@
 		<dependency>
 			<groupId>org.hsqldb</groupId>
 			<artifactId>hsqldb</artifactId>
-			<version>1.8.0.10</version>
+			<version>2.2.8</version>
 		</dependency>
 
 		<dependency>
@@ -230,7 +230,7 @@
 
 		<dependency>
 			<groupId>edu.mayo.cts2.framework</groupId>
-			<artifactId>core</artifactId>
+			<artifactId>service</artifactId>
 			<version>${develpment.framework.version}</version>
 			<exclusions>
 				<exclusion>
