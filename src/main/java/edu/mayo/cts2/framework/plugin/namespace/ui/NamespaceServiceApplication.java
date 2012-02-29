@@ -14,6 +14,7 @@ import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.DefaultFieldFactory;
 import com.vaadin.ui.Field;
@@ -87,7 +88,7 @@ public class NamespaceServiceApplication extends Application implements Initiali
                     	
                     	new InputDialog(getMainWindow(), "Please Input URI:",
                                 new InputDialog.Recipient() {
-                            public boolean gotInput(String uri) {
+                            public boolean gotInput(String uri, String preferredName) {
 
 										if (!validateUri(uri)) {
 											return false;
@@ -100,6 +101,9 @@ public class NamespaceServiceApplication extends Application implements Initiali
 													.getItemProperty("URI")
 													.setValue(uri);
 											namespaceList.getItem(id)
+													.getItemProperty("Preferred Name")
+													.setValue(preferredName);
+											namespaceList.getItem(id)
 													.getItemProperty("URI")
 													.setReadOnly(true);
 											
@@ -111,6 +115,7 @@ public class NamespaceServiceApplication extends Application implements Initiali
 											
 											MultiNameNamespaceReference ref = new MultiNameNamespaceReference();
 											ref.setUri(uri);
+											ref.setPreferredName(preferredName);
 											namespaceMaintenanceService.save(ref);
 											
 											return true;
@@ -186,11 +191,32 @@ public class NamespaceServiceApplication extends Application implements Initiali
                 }
             });
         }
-    }
+        
+        Button refresh = new Button("Refresh");
+        refresh.addListener(new ClickListener(){
 
-    private IndexedContainer createContainer() {
+			@Override
+			public void buttonClick(ClickEvent event) {
+				namespaceData.removeAllItems();
+				
+				populateContainer(namespaceData);
+			}
+        	
+        });
+        
+        bottomLeftCorner.addComponent(refresh);
+    }
+	
+	private IndexedContainer createContainer() {
         IndexedContainer ic = new IndexedContainer();
-      
+        
+        this.populateContainer(ic);
+        
+        return ic;
+	}
+
+    private void populateContainer(IndexedContainer ic) {
+        
         for (String p : fields) {
             ic.addContainerProperty(p, String.class, "");
         }
@@ -204,9 +230,6 @@ public class NamespaceServiceApplication extends Application implements Initiali
         	ic.getContainerProperty(id, "Alternate Names").setValue(
         			StringUtils.join(namespace.getAlternateName(), ','));
         }
-       
-     
-        return ic;
     }
     
     class MyNestedFormFactory extends DefaultFieldFactory {

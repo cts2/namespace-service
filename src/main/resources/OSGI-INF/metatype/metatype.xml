@@ -5,6 +5,8 @@
 		<AD name="JDBC Driver Class" id="jdbcDriverClass" required="true" type="String"  />
 		<AD name="JDBC User Name" id="username" required="true" type="String"  />
 		<AD name="JDBC Password" id="password" required="true" type="Password"  />
+		<AD name="Console User Name" id="consoleUsername" required="true" type="String"  />
+		<AD name="Console Password" id="consolePassword" required="true" type="Password"  />
 	</OCD>
 	<Designate pid="edu.mayo.cts2.framework.plugin.namespace">
         <Object ocdref="edu.mayo.cts2.framework.plugin.namespace"/>

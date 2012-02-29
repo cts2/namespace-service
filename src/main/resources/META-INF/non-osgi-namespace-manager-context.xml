@@ -13,10 +13,17 @@
 
 	<import resource="classpath:/META-INF/spring/namespace-manager-context.xml"/>
 	
+<!-- 	<util:properties id="web-props"> -->
+<!-- 		<prop key="jdbcUrl">jdbc:hsqldb:mem:test</prop> -->
+<!-- 		<prop key="jdbcDriverClass">org.hsqldb.jdbcDriver</prop> -->
+<!-- 		<prop key="username">sa</prop> -->
+<!-- 		<prop key="password"></prop> -->
+<!-- 	</util:properties> -->
+
 	<util:properties id="web-props">
-		<prop key="jdbcUrl">jdbc:hsqldb:mem:test</prop>
-		<prop key="jdbcDriverClass">org.hsqldb.jdbcDriver</prop>
-		<prop key="username">sa</prop>
+		<prop key="jdbcUrl">jdbc:mysql://localhost/namespace_manager</prop>
+		<prop key="jdbcDriverClass">com.mysql.jdbc.Driver</prop>
+		<prop key="username">root</prop>
 		<prop key="password"></prop>
 	</util:properties>
 	

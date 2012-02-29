@@ -56,7 +56,7 @@ public class NamespaceController implements ControllerProvider {
 	@ResponseBody
 	public Object getNamespaceByUri(
 			HttpServletResponse response, 
-			@RequestParam(required=false) String uri,
+			@RequestParam(required=true) String uri,
 			@RequestParam(defaultValue="false") boolean all) {
 		Object returnObj;
 		if(all){
@@ -100,7 +100,7 @@ public class NamespaceController implements ControllerProvider {
 	public void addLocalName(
 			HttpServletResponse response, 
 			@RequestBody String localName,
-			@RequestParam(required=false) String uri,
+			@RequestParam(required=true) String uri,
 			@RequestParam(defaultValue="false") boolean preferred) {
 		
 		this.namespaceMaintenanceService.addLocalName(uri, localName, preferred);
@@ -136,7 +136,7 @@ public class NamespaceController implements ControllerProvider {
 	
 	private Object handleResponse(Object result, HttpServletResponse response){
 		if(result == null){
-			int status = HttpServletResponse.SC_NOT_IMPLEMENTED;
+			int status = HttpServletResponse.SC_NOT_FOUND;
 			response.setStatus(status);
 		}
 		

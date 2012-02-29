@@ -9,12 +9,13 @@
 	<version>0.1.0-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 
-	<name>Namespace Manager</name>
-	<description>A Namespace Manager for the CTS2 Development Framework.</description>
+	<name>Namespace Service</name>
+	<description>A Namespace Service Implementation for the CTS2 Development Framework.</description>
 
 	<properties>
 		<vaadin.version>6.7.5</vaadin.version>
 		<develpment.framework.version>0.5.3-SNAPSHOT</develpment.framework.version>
+		<spring-security.version>3.1.0.RELEASE</spring-security.version>
 	</properties>
 
 	<build>
@@ -33,9 +34,9 @@
 							*;resolution:=optional
 						</Import-Package>
 						<Embed-Transitive>true</Embed-Transitive>
-						<Embed-Dependency>mysql-connector-java,vaadin,antlr,javassist,hsqldb,slf4j*,jboss*,commons-pool,commons-dbcp,*spring-tx*,*spring-orm*,*spring-jdbc*,*spring-data*,*hibernate*</Embed-Dependency>
+						<Embed-Dependency>spring-security-*,mysql-connector-java,vaadin,antlr,javassist,hsqldb,slf4j*,jboss*,commons-pool,commons-dbcp,*spring-tx*,*spring-orm*,*spring-jdbc*,*spring-data*,*hibernate*</Embed-Dependency>
 						<Spring-Context>*;timeout:=60</Spring-Context>
-<!-- 						<_exportcontents>*</_exportcontents> -->
+						<!-- <_exportcontents>*</_exportcontents> -->
 						<_nouses>true</_nouses>
 					</instructions>
 				</configuration>
@@ -77,6 +78,31 @@
 	</reporting>
 
 	<dependencies>
+		<!-- Spring Security -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core</artifactId>
+			<version>${spring-security.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-config</artifactId>
+			<version>${spring-security.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-acl</artifactId>
+			<version>${spring-security.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-web</artifactId>
+			<version>${spring-security.version}</version>
+		</dependency>
+		
 		<dependency>
 			<groupId>com.vaadin</groupId>
 			<artifactId>vaadin</artifactId>
@@ -223,10 +249,22 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.vaadin.addons</groupId>
+			<artifactId>hbncontainer</artifactId>
+			<version>1.0.5</version>
+		</dependency>
+
+		<dependency>
 			<groupId>commons-pool</groupId>
 			<artifactId>commons-pool</artifactId>
 			<version>1.6</version>
 		</dependency>
+
+<dependency>
+		<groupId>org.vaadin.addons.lazyquerycontainer</groupId>
+		<artifactId>vaadin-lazyquerycontainer</artifactId>
+		<version>1.2.11</version>
+	</dependency>
 
 		<dependency>
 			<groupId>edu.mayo.cts2.framework</groupId>
@@ -248,5 +286,10 @@
 		</dependency>
 	</dependencies>
 
-
+	<repositories>
+		<repository>
+			<id>vaadin-addons</id>
+			<url>http://maven.vaadin.com/vaadin-addons</url>
+		</repository>
+	</repositories>
 </project>

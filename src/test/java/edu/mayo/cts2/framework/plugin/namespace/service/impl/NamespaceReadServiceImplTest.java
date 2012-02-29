@@ -25,8 +25,8 @@ public class NamespaceReadServiceImplTest extends DBClearingTestBase {
 	@Transactional
 	public void insert(){
 		Namespace ns1 = new Namespace("http://my/uri");
-		ns1.getAlternateNames().add("one");
-		ns1.getAlternateNames().add("two");
+		ns1.addAlternateName("one");
+		ns1.addAlternateName("two");
 		this.namespaceRepository.save(ns1);
 	}
 	

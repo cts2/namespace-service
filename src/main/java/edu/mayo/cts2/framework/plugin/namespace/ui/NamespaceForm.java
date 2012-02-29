@@ -139,7 +139,7 @@ public class NamespaceForm extends Form implements ClickListener {
 		MultiNameNamespaceReference ref = new MultiNameNamespaceReference();
 		String uri = (String)item.getItemProperty("URI").getValue();
 		String preferredName = (String)item.getItemProperty("Preferred Name").getValue();
-		
+
 		ref.setUri(uri);
 		ref.setPreferredName(preferredName);
 		

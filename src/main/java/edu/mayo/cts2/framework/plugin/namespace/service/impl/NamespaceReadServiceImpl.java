@@ -59,6 +59,10 @@ public class NamespaceReadServiceImpl implements NamespaceReadService {
 		Namespace namespace = this.namespaceRepository.findOne(uri);
 
 		if (namespace == null) {
+			namespace = this.namespaceRepository.findOne(uri+"#");
+		}
+		
+		if (namespace == null) {
 			return null;
 		}
 

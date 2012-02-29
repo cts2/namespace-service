@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -18,12 +17,9 @@ public class Namespace {
 	
 	@Id
 	private String uri;
-	
-	@Column(unique=true)
-	private String preferredName;
-	
+
 	@ElementCollection(fetch = FetchType.EAGER)
-	private Set<String> alternateNames = new HashSet<String>();
+	private Set<Prefix> prefixes = new HashSet<Prefix>();
 	
 	public Namespace(){
 		super();
@@ -32,8 +28,8 @@ public class Namespace {
 	public Namespace(MultiNameNamespaceReference multiNameNamespaceReference){
 		super();
 		this.setUri(multiNameNamespaceReference.getUri());
-		this.preferredName = multiNameNamespaceReference.getPreferredName();
-		this.alternateNames.addAll(Arrays.asList(multiNameNamespaceReference.getAlternateName()));
+		this.setPreferredName(multiNameNamespaceReference.getPreferredName());
+		this.setAlternateNames(new HashSet<String>(Arrays.asList(multiNameNamespaceReference.getAlternateName())));
 	}
 	
 	public Namespace(String uri){
@@ -50,19 +46,50 @@ public class Namespace {
 	}
 
 	public String getPreferredName() {
-		return preferredName;
+		for(Prefix prefix : this.prefixes){
+			if(prefix.isPreferred()){
+				return prefix.getPrefix();
+			}
+		}
+		
+		return null;
 	}
 
 	public void setPreferredName(String preferredName) {
-		this.preferredName = preferredName;
+		for(Prefix prefix : this.prefixes){
+			prefix.setPreferred(false);
+		}
+		this.prefixes.add(new Prefix(preferredName, true));	
 	}
 
 	public Set<String> getAlternateNames() {
-		return alternateNames;
+		Set<String> alternameNames = new HashSet<String>();
+		for(Prefix prefix : this.prefixes){
+			if(! prefix.isPreferred()){
+				alternameNames.add(prefix.getPrefix());
+			}
+		}
+		
+		return alternameNames;
+	}
+	
+	public void addAlternateName(String alternateName) {
+		this.prefixes.add(new Prefix(alternateName,false));
 	}
 
 	public void setAlternateNames(Set<String> alternateNames) {
-		this.alternateNames = alternateNames;
+		Set<Prefix> prefixes = new HashSet<Prefix>();
+		for(Prefix prefix : this.prefixes){
+			if(prefix.isPreferred()){
+				prefixes.add(prefix);
+			}
+		}
+		
+		for(String altName : alternateNames){
+			prefixes.add(new Prefix(altName, false));
+		}
+		
+		this.prefixes = prefixes;
 	}
 
 	@Override
@@ -105,6 +132,10 @@ public class Namespace {
 		ref.setAlternateName(this.getAlternateNames().toArray(new String[this.getAlternateNames().size()]));
 		
 		return ref;
+	}
+
+	public void removeName(String localName) {
+		this.prefixes.remove(new Prefix(localName, false));
 	}
 	
 	

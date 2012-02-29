@@ -46,7 +46,7 @@ public class NamespaceMaintenanceServiceImpl implements NamespaceMaintenanceServ
 				//check if it is an alternate name
 				if(namespace.getAlternateNames().contains(localName)){
 					if(setPreferred){
-						namespace.getAlternateNames().remove(localName);
+						namespace.removeName(localName);
 						namespace.setPreferredName(localName);
 						
 						this.namespaceRepository.save(namespace);
@@ -55,7 +55,7 @@ public class NamespaceMaintenanceServiceImpl implements NamespaceMaintenanceServ
 					if(setPreferred){
 						String currentPreferred = namespace.getPreferredName();
 						if(StringUtils.isNotBlank(currentPreferred)){
-							namespace.getAlternateNames().add(currentPreferred);
+							namespace.addAlternateName(currentPreferred);
 						}
 						namespace.setPreferredName(localName);
 					} else {
@@ -63,7 +63,7 @@ public class NamespaceMaintenanceServiceImpl implements NamespaceMaintenanceServ
 						if(StringUtils.isBlank(currentPreferred)){
 							namespace.setPreferredName(localName);
 						} else {
-							namespace.getAlternateNames().add(localName);
+							namespace.addAlternateName(localName);
 						}
 					}
 					

@@ -9,6 +9,7 @@ import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.annotation.Transactional;
 
 import edu.mayo.cts2.framework.plugin.namespace.dao.DBClearingTestBase;
@@ -29,13 +30,13 @@ public class NamespaceMaintenanceServiceImplTest extends DBClearingTestBase {
 	public void insert(){
 		Namespace ns1 = new Namespace("http://my/uri");
 		ns1.setPreferredName("prefname");
-		ns1.getAlternateNames().add("one");
-		ns1.getAlternateNames().add("two");
+		ns1.addAlternateName("one");
+		ns1.addAlternateName("two");
 		this.namespaceRepository.save(ns1);
 		
 		Namespace ns2 = new Namespace("http://my/uri2");
-		ns2.getAlternateNames().add("one");
-		ns2.getAlternateNames().add("two");
+		ns2.addAlternateName("three");
+		ns2.addAlternateName("four");
 		this.namespaceRepository.save(ns2);
 	}
 	
@@ -107,6 +108,12 @@ public class NamespaceMaintenanceServiceImplTest extends DBClearingTestBase {
 		
 		assertEquals("newPrefName", ns.getPreferredName());
 		assertEquals(2, ns.getAlternateNames().size());
+	}
+	
+	@Test(expected=DataIntegrityViolationException.class)
+	public void TestAddLocalNameDuplicate(){
+		this.namespaceMaintenanceServiceImpl.addLocalName("http://my/uri2", "one", false);
+		
 	}
 	
 	

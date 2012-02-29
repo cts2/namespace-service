@@ -1,0 +1,301 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+    <title>CTS2 Namespace Service</title>
+   
+    <link href="resources/Content/Site.css" rel="stylesheet" type="text/css" />
+
+    <link href="resources/Content/themes/redmond/jquery-ui-1.8.16.custom.css" rel="stylesheet" type="text/css" />
+
+    <!-- jTable style file -->
+
+    <link href="resources/Scripts/jtable/themes/standard/blue/jtable_blue.css" rel="stylesheet" type="text/css" />
+
+    <script src="resources/Scripts/jquery-1.6.4.min.js" type="text/javascript"></script>
+
+    <script src="resources/Scripts/jquery-ui-1.8.16.custom.min.js" type="text/javascript"></script>
+
+    <script src="resources/Scripts/modernizr-1.7.min.js" type="text/javascript"></script>
+
+    <script src="resources/Scripts/jtablesite.js" type="text/javascript"></script>
+
+    <!-- A helper library for JSON serialization -->
+
+    <script type="text/javascript" src="resources/Scripts/jtable/external/json2.js"></script>
+
+    <!-- Core jTable script file -->
+
+    <script type="text/javascript" src="resources/Scripts/jtable/jquery.jtable.js"></script>
+
+    <style>
+
+        div.filtering
+
+        {
+
+            border: 1px solid #999;
+
+            margin-bottom: 5px;
+
+            padding: 10px;
+
+            background-color: #EEE;
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="site-container">
+
+        <div class="filtering">
+
+            <label>
+
+                Search :
+
+                <input type="text" name="name" id="name" />
+
+            </label>
+
+            <button type="submit" id="clearSearchButton">Clear Search</button>
+            
+            <label> Page Size : </label>
+            <select id="pageSizeComboBox">
+			  <option value="10">10</option>
+			  <option value="25">25</option>
+			  <option value="50">50</option>
+			  <option value="100">100</option>
+			</select> 
+
+        </div>
+
+        <div id="StudentTableContainer"></div>
+        <button id="deleteAllButton">Remove Selected</button>
+
+    </div>
+
+    <script type="text/javascript">
+
+    //for local testing
+	//var uriBase = "http://localhost:8080/webapp-rest";
+   
+    //for deployment
+    var uriBase = "..";
+    
+    var pageSize = 10;
+    var searchDelay = 1000;
+
+
+        $(document).ready(function () {
+ 
+        	 $('#name')
+             .data('timeout', null)
+             .keyup(function(){
+                 clearTimeout(jQuery(this).data('timeout'));
+                 $(this).data('timeout', setTimeout(submitQuizForm, searchDelay));
+             });
+
+             
+             $('#deleteAllButton').button().click(function () {
+             	$( "#dialog-confirm" ).dialog("open");
+             });
+
+            //Prepare jtable plugin
+			createJtable();
+
+
+            //Re-load records when user click 'load records' button.
+
+           $('#clearSearchButton').click(function (e) {
+	            $('#name').val(""); 
+	            submitQuizForm();
+	        });
+
+
+
+            //Load all records when page is first shown
+            $('#StudentTableContainer').jtable('load');
+            
+            $("#pageSizeComboBox").change(function() {
+            	pageSize = $("#pageSizeComboBox option:selected").text();
+            	$('#StudentTableContainer').jtable("destroy");
+            	createJtable();
+            	submitQuizForm();
+            });
+            
+          	$( "#dialog-confirm" ).dialog({
+    			resizable: false,
+    			height:140,
+    			autoOpen: false,
+    			modal: true,
+    			buttons: {
+    				"Delete all items": function() {
+    					$( this ).dialog( "close" );
+    					var $selectedRows = $('#StudentTableContainer').jtable('selectedRows');
+    		            $('#StudentTableContainer').jtable('deleteRows', $selectedRows);
+    				},
+    				Cancel: function() {
+    					$( this ).dialog( "close" );
+    				}
+    			}
+    		});
+
+        });
+        
+        function createJtable(){
+           $('#deleteAllButton').button('disable');
+        	
+           $('#StudentTableContainer').jtable({
+
+                title: 'Namespaces',
+                
+                openChildAsAccordion: false,
+                
+                selecting: true,
+                
+                multiselect: true,
+                
+                selectingCheckboxes: true,
+
+                paging: true,
+
+                pageSize: pageSize,
+                
+                selectOnRowClick: false,
+
+                sorting: false,
+
+                selectionChanged: function(){ 
+                	var numberSelected = $('#StudentTableContainer').jtable('selectedRows').length;
+                	if(numberSelected > 0){
+                		$('#deleteAllButton').button('enable');
+                	} else {
+                		$('#deleteAllButton').button('disable');
+                	}
+                },
+
+                actions: {
+
+                    listAction: uriBase+'/jtables/listnamespaces',
+
+                    createAction: uriBase+'/jtables/createnamespace',
+
+                    updateAction: uriBase+'/jtables/updatenamespace',
+
+                    deleteAction: uriBase+'/jtables/deletenamespace'
+
+                },
+
+                fields: {
+
+                    uri: {
+
+                   	  title: 'URI',
+                      width: '60%',
+                      inputClass: "custom-input-class",  
+                      key: true
+
+                    },
+
+                    preferredName: {
+
+                        title: 'PreferredName',
+                        inputClass: "custom-input-class",
+                        width: '30%'
+
+                    },
+
+                 
+                    alternateNamesList: {
+
+                        title: 'AlternateNames',
+                        width: '10%',
+                        create: false,
+                        edit: false,
+                        listClass: "childTable",
+
+                        display: function (studentData) {
+                            //Create an image that will be used to open child table
+                            var $img = $('<img src="resources/Content/images/Misc/toggle-expand-icon.png" title="Edit Alternate Names" />');
+                            //Open child table when user clicks the image
+           
+                            $img.click(function () {
+								openChildTableClickHandler($img, studentData.record.uri);
+                            });
+                           
+                            return $img;
+                        }
+
+                    }
+
+                }
+
+            });
+        }
+
+		 function submitQuizForm(){
+			 $('#StudentTableContainer').jtable('load', {
+	                searchText: $('#name').val(),
+	         });
+		 }
+	
+		 function openChildTableClickHandler($img, uri) {
+             
+             $('#StudentTableContainer').jtable('openChildTable',
+                     $img.closest('tr'),
+                     {
+                         title: uri + ' - Alternate Names',
+                         showCloseButton: false,
+                         actions: {
+                         	listAction: uriBase+'/jtables/listalternatenames?uri='+ uri,
+                             deleteAction: uriBase+'/jtables/deletealternatename?uri='+ uri,
+                             updateAction: uriBase+'/jtables/updatealternatename?uri='+ uri,
+                             createAction: uriBase+'/jtables/createalternatename?uri='+ uri,
+                         },
+                         fields: {
+                            
+                             originalAlternateName: {
+                                 type: 'hidden',
+                                 key: true
+                             },
+                             
+                             newAlternateName: {
+                                 title: 'Alternate Name',
+                                 width: '90%',
+                                 inputClass: "custom-input-class"
+                             }
+                             
+                         }
+                     }, function (data) { 
+                     	//opened handler
+                         data.childTable.jtable('load');
+                     });
+             
+             $( $img ).attr("src", "resources/Content/images/Misc/toggle-icon.png");
+             $( $img ).unbind('click');
+             $( $img ).click(function() {
+             	 $('#StudentTableContainer').jtable('closeChildTable', $img.closest('tr') );
+             	 $( $img ).attr("src", "resources/Content/images/Misc/toggle-expand-icon.png");
+             	 
+             	 $( $img ).click(function () {
+						openChildTableClickHandler($img, uri);
+                 });
+             	 
+             });
+
+         }
+
+    </script>
+
+	<div id="dialog-confirm" title="Are you sure?">
+		<p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>These items will be permanently deleted and cannot be recovered. Are you sure?</p>
+	</div>
+</body>
+
+</html>
+

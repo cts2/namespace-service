@@ -12,6 +12,9 @@
 	<import resource="classpath:/META-INF/spring/namespace-manager-context.xml"/>
 
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+<!-- 		<property name="driverClassName" value="com.mysql.jdbc.Driver" /> -->
+<!-- 		<property name="url" value="jdbc:mysql://localhost/namespace_manager" /> -->
+<!-- 		<property name="username" value="root" /> -->
 		<property name="driverClassName" value="org.hsqldb.jdbcDriver" />
 		<property name="url" value="jdbc:hsqldb:mem:test" />
 		<property name="username" value="sa" />

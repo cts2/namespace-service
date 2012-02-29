@@ -16,14 +16,18 @@
 	<osgix:cm-properties id="props" persistent-id="edu.mayo.cts2.framework.plugin.namespace"/>
 
 	<ctx:property-placeholder properties-ref="props" />
+	
+	<osgi:service ref="springSecurityFilterChain" interface="javax.servlet.Filter"/>
 	  
 	<osgi:service ref="namespaceControllerProvider" interface="edu.mayo.cts2.framework.webapp.rest.extensions.controller.ControllerProvider"/>
+	
+	<osgi:service ref="jtablesNamespaceControllerProvider" interface="edu.mayo.cts2.framework.webapp.rest.extensions.controller.ControllerProvider"/>
 	
 	<osgi:reference id="pluginConfigManager" interface="edu.mayo.cts2.framework.core.plugin.PluginConfigManager"/>
 	
 	<osgi:reference id="httpService" interface="org.osgi.service.http.HttpService"/>
 
-	<bean class="edu.mayo.cts2.framework.plugin.namespace.ui.osgi.OsgiApplicationServlet"/>
+<!-- 	<bean class="edu.mayo.cts2.framework.plugin.namespace.ui.osgi.OsgiApplicationServlet"/> -->
 	
-	<bean class="edu.mayo.cts2.framework.plugin.namespace.ui.osgi.StaticResources"/>
+	<bean class="edu.mayo.cts2.framework.plugin.namespace.ui.osgi.StaticHttpService"/>
 </beans>
