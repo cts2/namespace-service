@@ -14,7 +14,7 @@ import edu.mayo.cts2.framework.plugin.namespace.dao.NamespaceRepository;
 import edu.mayo.cts2.framework.plugin.namespace.model.Namespace;
 import edu.mayo.cts2.framework.service.namespace.NamespaceQueryService;
 
-@Component
+@Component("namespaceQueryServiceImpl")
 public class NamespaceQueryServiceImpl implements NamespaceQueryService {
 
 	@Autowired

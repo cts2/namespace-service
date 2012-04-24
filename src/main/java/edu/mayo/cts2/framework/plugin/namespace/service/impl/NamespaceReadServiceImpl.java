@@ -10,7 +10,7 @@ import edu.mayo.cts2.framework.plugin.namespace.dao.NamespaceRepository;
 import edu.mayo.cts2.framework.plugin.namespace.model.Namespace;
 import edu.mayo.cts2.framework.service.namespace.NamespaceReadService;
 
-@Component
+@Component("namespaceReadServiceImpl")
 public class NamespaceReadServiceImpl implements NamespaceReadService {
 
 	@Autowired

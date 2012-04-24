@@ -17,6 +17,12 @@
 
 	<ctx:property-placeholder properties-ref="props" />
 	
+	<osgi:service ref="namespaceControllerProvider" interface="edu.mayo.cts2.framework.webapp.rest.extensions.controller.ControllerProvider"/>
+	
+	<osgi:service ref="namespaceMaintenanceServiceImpl" interface="edu.mayo.cts2.framework.service.namespace.NamespaceMaintenanceService"/>
+	<osgi:service ref="namespaceReadServiceImpl" interface="edu.mayo.cts2.framework.service.namespace.NamespaceReadService"/>
+	<osgi:service ref="namespaceQueryServiceImpl" interface="edu.mayo.cts2.framework.service.namespace.NamespaceQueryService"/>
+
 	<osgi:service ref="springSecurityFilterChain" interface="javax.servlet.Filter"/>
 	  
 	<osgi:service ref="namespaceControllerProvider" interface="edu.mayo.cts2.framework.webapp.rest.extensions.controller.ControllerProvider"/>
